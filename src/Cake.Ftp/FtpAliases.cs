@@ -2,6 +2,7 @@
 using Cake.Core;
 using Cake.Core.Annotations;
 using Cake.Core.IO;
+using Cake.Ftp.Services;
 
 namespace Cake.Ftp {
     /// <summary>
@@ -32,7 +33,7 @@ namespace Cake.Ftp {
             if (context == null) {
                 throw new ArgumentNullException(nameof(context));
             }
-            var ftpClient = new FtpClient(context.FileSystem, context.Environment, context.Log);
+            var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
             ftpClient.UploadFile(serverUri, fileToUpload, username, password);
         }
     }
