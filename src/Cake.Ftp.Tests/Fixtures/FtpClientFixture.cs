@@ -29,6 +29,10 @@ namespace Cake.Ftp.Tests.Fixtures {
             Log = Substitute.For<ICakeLog>();
             FtpService = Substitute.For<IFtpService>();
             FileSystem = fileSystem;
+            Environment = environment;
+            Username = "username";
+            Password = "password";
+            ServerUri = new Uri("ftp://my.server.com/test.html");
         }
 
         public void UploadFile() {

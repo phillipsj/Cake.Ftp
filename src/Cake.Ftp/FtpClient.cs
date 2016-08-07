@@ -17,6 +17,9 @@ namespace Cake.Ftp {
             if (environment == null) {
                 throw new ArgumentNullException(nameof(environment));
             }
+            if (ftpService == null) {
+                throw new ArgumentNullException(nameof(ftpService));
+            }
             _fileSystem = fileSystem;
             _environment = environment;
             _ftpService = ftpService;
@@ -37,7 +40,7 @@ namespace Cake.Ftp {
                 throw new ArgumentNullException(nameof(password), "Password is null.");
             }
             if (serverUri.Scheme != Uri.UriSchemeFtp) {
-                throw new ArgumentOutOfRangeException("Server URI scheme is not FTP.");
+                throw new ArgumentOutOfRangeException(nameof(serverUri), "Server URI scheme is not FTP.");
             }
 
             var file = _fileSystem.GetFile(fileToUpload);
@@ -55,7 +58,7 @@ namespace Cake.Ftp {
                 throw new ArgumentNullException(nameof(password), "Password is null.");
             }
             if (serverUri.Scheme != Uri.UriSchemeFtp) {
-                throw new ArgumentOutOfRangeException("Server URI scheme is not FTP.");
+                throw new ArgumentOutOfRangeException(nameof(serverUri), "Server URI scheme is not FTP.");
             }
             _ftpService.DeleteFile(serverUri, username, password);
         }
