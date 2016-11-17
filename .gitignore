@@ -9,6 +9,7 @@
 
 # Build related
 build-results/
+artifacts
 tools/Cake/
 tools/xunit.runners/
 tools/xunit.runner.console/
