@@ -70,8 +70,8 @@ Task("Package")
             Symbols =  false,
             NoPackageAnalysis = true,
             Files = new []{
-                new NuSpecContent {Source = "Cake.Ftp.dll" Target="lib/net45/Cake.Ftp.dll"},
-                new NuSpecContent {Source = "Cake.Ftp.XML" Target="lib/net45/Cake.Ftp.xml"}
+                new NuSpecContent {Source = "Cake.Ftp.dll", Target="lib/net45/Cake.Ftp.dll"},
+                new NuSpecContent {Source = "Cake.Ftp.XML", Target="lib/net45/Cake.Ftp.xml"}
             },
             BasePath = "./src/Cake.Ftp/bin/" + configuration,
             OutputDirectory = artifactsDir
