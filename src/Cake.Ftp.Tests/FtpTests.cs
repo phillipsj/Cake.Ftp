@@ -83,7 +83,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("username", ((ArgumentNullException) result).ParamName);
+                Assert.Equal("Username", ((ArgumentNullException) result).ParamName);
             }
 
             [Fact]
@@ -96,7 +96,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("password", ((ArgumentNullException) result).ParamName);
+                Assert.Equal("Password", ((ArgumentNullException) result).ParamName);
             }
 
             [Fact]
@@ -153,7 +153,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("username", ((ArgumentNullException)result).ParamName);
+                Assert.Equal("Username", ((ArgumentNullException)result).ParamName);
             }
 
             [Fact]
@@ -167,7 +167,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("password", ((ArgumentNullException)result).ParamName);
+                Assert.Equal("Password", ((ArgumentNullException)result).ParamName);
             }
 
             [Fact]

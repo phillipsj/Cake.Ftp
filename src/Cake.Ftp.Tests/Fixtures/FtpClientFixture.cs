@@ -37,12 +37,14 @@ namespace Cake.Ftp.Tests.Fixtures {
 
         public void UploadFile() {
             var ftpClient = new FtpClient(FileSystem, Environment, FtpService);
-            ftpClient.UploadFile(ServerUri, FileToUpload, Username, Password);
+            var settings = new FtpSettings() {Username = Username, Password = Password};
+            ftpClient.UploadFile(ServerUri, FileToUpload, settings);
         }
 
         public void DeleteFile() {
             var ftpClient = new FtpClient(FileSystem, Environment, FtpService);
-            ftpClient.DeleteFile(ServerUri, Username, Password);
+            var settings = new FtpSettings() { Username = Username, Password = Password };
+            ftpClient.DeleteFile(ServerUri, settings);
         }
     }
 }
