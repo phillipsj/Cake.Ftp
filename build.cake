@@ -56,7 +56,7 @@ Task("Package")
     .Does(() =>{
         var nuGetPackSettings = new NuGetPackSettings {
             Id = "Cake.Ftp",
-            Version = "0.10",
+            Version = version,
             Title = "Cake.Ftp",
             Authors = new []{"Jamie Phillips"},
             Owners = new []{"Jamie Phillips"},
@@ -64,7 +64,7 @@ Task("Package")
             ProjectUrl = new Uri("https://github.com/phillipsj/Cake.Ftp"),
             IconUrl = new Uri("https://raw.githubusercontent.com/cake-build/graphics/master/png/cake-small.png"),
             LicenseUrl = new Uri("https://github.com/phillipsj/Cake.Ftp/blob/master/LICENSE.md"),
-            Copyright = "Jamie Phillips 2016",
+            Copyright = string.Format("Jamie Phillips {0}", DateTime.Now.Year),
             Tags = new []{"Cake", "FTP"},
             RequireLicenseAcceptance = false,
             Symbols =  false,
@@ -99,7 +99,7 @@ Task("Publish")
 //////////////////////////////////////////////////////////////////////
 
 Task("Default")
-    .IsDependentOn("Run-Unit-Tests");
+    .IsDependentOn("Publish");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
