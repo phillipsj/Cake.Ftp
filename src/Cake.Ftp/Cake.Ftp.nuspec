@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Cake.Ftp</id>
-    <version>1.0.0.0</version>
+    <version>$version$</version>
     <title>Cake.Ftp</title>
     <authors>Jamie Phillips</authors>
     <owners>Jamie Phillips</owners>
