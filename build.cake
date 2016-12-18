@@ -17,7 +17,7 @@ var artifactsDir = Directory("./src/artifacts");
 var assemblyInfo = ParseAssemblyInfo("./src/Cake.Ftp/Properties/AssemblyInfo.cs");
 var buildNumber = AppVeyor.Environment.Build.Number;
 Information(assemblyInfo.AssemblyVersion);
-var version = AppVeyor.IsRunningOnAppVeyor ? assemblyInfo.AssemblyVersion : assemblyInfo.AssemblyVersion + "." + buildNumber; 
+var version = assemblyInfo.AssemblyVersion; 
 //////////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////////
@@ -70,7 +70,8 @@ Task("Package")
             Symbols =  false,
             NoPackageAnalysis = true,
             Files = new []{
-                new NuSpecContent {Source = "Cake.Ftp.dll", Target = "bin"}
+                new NuSpecContent {Source = "Cake.Ftp.dll" Target="lib/net45/Cake.Ftp.dll"},
+                new NuSpecContent {Source = "Cake.Ftp.XML" Target="lib/net45/Cake.Ftp.xml"}
             },
             BasePath = "./src/Cake.Ftp/bin/" + configuration,
             OutputDirectory = artifactsDir
