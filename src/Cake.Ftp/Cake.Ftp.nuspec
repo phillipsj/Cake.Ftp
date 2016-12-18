@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Cake.Ftp</id>
+    <version>1.0.0.0</version>
+    <title>Cake.Ftp</title>
+    <authors>Jamie Phillips</authors>
+    <owners>Jamie Phillips</owners>
+    <licenseUrl>https://github.com/phillipsj/Cake.Ftp</licenseUrl>
+    <projectUrl>https://github.com/phillipsj/Cake.Ftp</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/cake-build/graphics/master/png/cake-small.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Cake Addin for working with FTP from a Cake script.</description>
+    <releaseNotes>Initial Release</releaseNotes>
+    <copyright>Jamie Phillips 2016</copyright>
+    <tags>CakeFtp</tags>
+  </metadata>
+</package>
