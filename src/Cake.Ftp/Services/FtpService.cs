@@ -17,25 +17,23 @@ namespace Cake.Ftp.Services {
             // Adding verbose logging for the URI being used.
             _log.Verbose("Uploading file to {0}", serverUri);
             // Creating the request
-            var request = (FtpWebRequest) WebRequest.Create(serverUri);
+            var request = (FtpWebRequest)WebRequest.Create(serverUri);
             request.Method = WebRequestMethods.Ftp.UploadFile;
 
             // Adding verbose logging for credentials used.
             _log.Verbose("Using the following credentials {0}, {1}", username, password);
             request.Credentials = new NetworkCredential(username, password);
 
-            using (var streamReader = new StreamReader(uploadFile.OpenRead())) {
-                // Get the file contents.
-                var fileContents = Encoding.UTF8.GetBytes(streamReader.ReadToEnd());
-                request.ContentLength = fileContents.Length;
+            request.ContentLength = uploadFile.Length;
 
-                // Writing the file to the request stream.
+            using (var stream = new FileStream(uploadFile.Path.FullPath, FileMode.Open, FileAccess.Read))
+            {
                 var requestStream = request.GetRequestStream();
-                requestStream.Write(fileContents, 0, fileContents.Length);
+                stream.CopyTo(requestStream);
                 requestStream.Close();
 
                 // Getting the response from the FTP server.
-                var response = (FtpWebResponse) request.GetResponse();
+                var response = (FtpWebResponse)request.GetResponse();
 
                 // Logging if it completed and the description of the status returned.
                 _log.Information("File upload complete, status {0}", response.StatusDescription);
