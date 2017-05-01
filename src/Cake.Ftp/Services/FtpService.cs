@@ -33,9 +33,6 @@ namespace Cake.Ftp.Services {
             // Creating the request
             var request = (FtpWebRequest) WebRequest.Create(serverUri);
             request.Method = WebRequestMethods.Ftp.UploadFile;
-
-            // Adding verbose logging for credentials used.
-            _log.Verbose("Using the following credentials {0}, {1}", username, password);
             request.Credentials = new NetworkCredential(username, password);
 
             using (var streamReader = new StreamReader(uploadFile.OpenRead())) {
