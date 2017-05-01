@@ -6,9 +6,9 @@ BuildParameters.SetParameters(context: Context,
                             buildSystem: BuildSystem,
                             sourceDirectoryPath: "./src",
                             title: "Cake.Ftp",
-                            repositoryOwner: "phillipsj",
+                            repositoryOwner: "cake-contrib",
                             repositoryName: "Cake.Ftp",
-                            appVeyorAccountName: "phillipsj");
+                            appVeyorAccountName: "cakecontrib");
 
 BuildParameters.PrintParameters(Context);
 
