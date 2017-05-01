@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Cake.Ftp</id>
-    <version>$version$</version>
+    <version>0.0.0</version>
     <title>Cake.Ftp</title>
     <authors>Jamie Phillips</authors>
     <owners>Jamie Phillips</owners>
@@ -12,7 +12,12 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Cake Addin for working with FTP from a Cake script.</description>
     <releaseNotes>Initial Release</releaseNotes>
-    <copyright>Jamie Phillips 2016</copyright>
-    <tags>CakeFtp</tags>
+    <copyright>Copyright (c) Jamie Phillips 2016 - Present</copyright>
+    <tags>CakeFtp, Cake, Ftp, Script, Build, Netlify, Addin</tags>
   </metadata>
+  <files>
+    <file src="Cake.Ftp.dll" target="lib\net45" />
+    <file src="Cake.Ftp.pdb" target="lib\net45" />
+    <file src="Cake.Ftp.xml" target="lib\net45" />
+  </files>
 </package>

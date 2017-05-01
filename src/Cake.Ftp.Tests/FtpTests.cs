@@ -9,40 +9,40 @@ namespace Cake.Ftp.Tests {
             [Fact]
             public void Should_Throw_If_File_System_Is_Null() {
                 // Given
-                var fixture = new FtpClientFixture {FileSystem = null};
+                var fixture = new FtpClientFixture { FileSystem = null };
 
                 // When 
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
                 Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("fileSystem", ((ArgumentNullException) result).ParamName);
+                Assert.Equal("fileSystem", ((ArgumentNullException)result).ParamName);
             }
 
             [Fact]
             public void Should_Throw_If_Cake_Environment_Is_Null() {
                 // Given
-                var fixture = new FtpClientFixture {Environment = null};
+                var fixture = new FtpClientFixture { Environment = null };
 
                 // When 
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
                 Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("environment", ((ArgumentNullException) result).ParamName);
+                Assert.Equal("environment", ((ArgumentNullException)result).ParamName);
             }
 
             [Fact]
             public void Should_Throw_If_FTP_Service_Is_Null() {
                 // Given
-                var fixture = new FtpClientFixture {FtpService = null};
+                var fixture = new FtpClientFixture { FtpService = null };
 
                 // When 
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
                 Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("ftpService", ((ArgumentNullException) result).ParamName);
+                Assert.Equal("ftpService", ((ArgumentNullException)result).ParamName);
             }
         }
 
@@ -50,58 +50,57 @@ namespace Cake.Ftp.Tests {
             [Fact]
             public void Should_Throw_If_Server_Uri_Is_Null() {
                 // Given
-                var fixture = new FtpClientFixture {ServerUri = null};
+                var fixture = new FtpClientFixture { ServerUri = null };
 
                 // When 
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
                 Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("serverUri", ((ArgumentNullException) result).ParamName);
+                Assert.Equal("serverUri", ((ArgumentNullException)result).ParamName);
             }
 
             [Fact]
             public void Should_Throw_If_File_To_Upload_Is_Null() {
                 // Given
-                var fixture = new FtpClientFixture {FileToUpload = null};
+                var fixture = new FtpClientFixture { FileToUpload = null };
 
                 // When 
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
                 Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("fileToUpload", ((ArgumentNullException) result).ParamName);
+                Assert.Equal("fileToUpload", ((ArgumentNullException)result).ParamName);
             }
 
             [Fact]
             public void Should_Throw_If_Username_Is_Null() {
                 // Given
-                var fixture = new FtpClientFixture {Username = null};
+                var fixture = new FtpClientFixture { Username = null };
 
                 // When 
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
                 Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("Username", ((ArgumentNullException) result).ParamName);
+                Assert.Equal("Username", ((ArgumentNullException)result).ParamName);
             }
 
             [Fact]
             public void Should_Throw_If_Password_Is_Null() {
                 // Given
-                var fixture = new FtpClientFixture {Password = null};
+                var fixture = new FtpClientFixture { Password = null };
 
                 // When 
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
                 Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("Password", ((ArgumentNullException) result).ParamName);
+                Assert.Equal("Password", ((ArgumentNullException)result).ParamName);
             }
 
             [Fact]
-            public void Should_Throw_If_Url_Is_Not_FTP_Scheme()
-            {
+            public void Should_Throw_If_Url_Is_Not_FTP_Scheme() {
                 // Given
                 var fixture = new FtpClientFixture { ServerUri = new Uri("http://my.server.com/test.html") };
 
@@ -114,8 +113,7 @@ namespace Cake.Ftp.Tests {
             }
 
             [Fact]
-            public void Should_Upload_File_Without_Error()
-            {
+            public void Should_Upload_File_Without_Error() {
                 // Given
                 var fixture = new FtpClientFixture();
 
@@ -129,8 +127,7 @@ namespace Cake.Ftp.Tests {
 
         public sealed class TheDeleteFileMethod {
             [Fact]
-            public void Should_Throw_If_Server_Uri_Is_Null()
-            {
+            public void Should_Throw_If_Server_Uri_Is_Null() {
                 // Given
                 var fixture = new FtpClientFixture { ServerUri = null };
 
@@ -143,8 +140,7 @@ namespace Cake.Ftp.Tests {
             }
 
             [Fact]
-            public void Should_Throw_If_Username_Is_Null()
-            {
+            public void Should_Throw_If_Username_Is_Null() {
                 // Given
                 var fixture = new FtpClientFixture { Username = null };
 
@@ -157,8 +153,7 @@ namespace Cake.Ftp.Tests {
             }
 
             [Fact]
-            public void Should_Throw_If_Password_Is_Null()
-            {
+            public void Should_Throw_If_Password_Is_Null() {
                 // Given
                 var fixture = new FtpClientFixture { Password = null };
 
@@ -171,8 +166,7 @@ namespace Cake.Ftp.Tests {
             }
 
             [Fact]
-            public void Should_Throw_If_Url_Is_Not_FTP_Scheme()
-            {
+            public void Should_Throw_If_Url_Is_Not_FTP_Scheme() {
                 // Given
                 var fixture = new FtpClientFixture { ServerUri = new Uri("http://my.server.com/test.html") };
 
@@ -185,8 +179,7 @@ namespace Cake.Ftp.Tests {
             }
 
             [Fact]
-            public void Should_Delete_File_Without_Error()
-            {
+            public void Should_Delete_File_Without_Error() {
                 // Given
                 var fixture = new FtpClientFixture();
 

@@ -32,8 +32,8 @@
     <DocumentationFile>bin\Release\Cake.Ftp.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Cake.Core, Version=0.17.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cake.Core.0.17.0\lib\net45\Cake.Core.dll</HintPath>
+    <Reference Include="Cake.Core, Version=0.16.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cake.Core.0.16.2\lib\net45\Cake.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -46,12 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions.cs" />
     <Compile Include="FtpAliases.cs" />
     <Compile Include="FtpClient.cs" />
     <Compile Include="FtpSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FtpService.cs" />
     <Compile Include="Services\IFtpService.cs" />
+    <Compile Include="ValidatedNotNullAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

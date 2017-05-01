@@ -30,12 +30,8 @@ namespace Cake.Ftp {
         [CakeMethodAlias]
         public static void FtpUploadFile(this ICakeContext context, Uri serverUri, FilePath fileToUpload,
             string username, string password) {
-            if (context == null) {
-                throw new ArgumentNullException(nameof(context));
-            }
-            var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
-            var settings = new FtpSettings() {Username = username, Password = password};
-            ftpClient.UploadFile(serverUri, fileToUpload, settings);
+            var settings = new FtpSettings() { Username = username, Password = password };
+            FtpUploadFile(context, serverUri, fileToUpload, settings);
         }
 
         /// <summary>
@@ -58,15 +54,8 @@ namespace Cake.Ftp {
         [CakeMethodAlias]
         public static void FtpUploadFile(this ICakeContext context, Uri serverUri, FilePath fileToUpload,
             FtpSettings settings) {
-            if (context == null) {
-                throw new ArgumentNullException(nameof(context));
-            }
-            if (settings == null) {
-                throw new ArgumentNullException(nameof(settings));
-            }
-
+            context.NotNull(nameof(context));
             var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
-
             ftpClient.UploadFile(serverUri, fileToUpload, settings);
         }
 
@@ -87,13 +76,8 @@ namespace Cake.Ftp {
         /// <param name="password">Password of the FTP account.</param>
         [CakeMethodAlias]
         public static void FtpDeleteFile(this ICakeContext context, Uri serverUri, string username, string password) {
-            if (context == null) {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
-            var settings = new FtpSettings() {Username = username, Password = password};
-            ftpClient.DeleteFile(serverUri, settings);
+            var settings = new FtpSettings() { Username = username, Password = password };
+            FtpDeleteFile(context, serverUri, settings);
         }
 
         /// <summary>
@@ -113,16 +97,9 @@ namespace Cake.Ftp {
         /// <param name="settings">The settings.</param>
         [CakeMethodAlias]
         public static void FtpDeleteFile(this ICakeContext context, Uri serverUri, FtpSettings settings) {
-            if (context == null) {
-                throw new ArgumentNullException(nameof(context));
-            }
-            if (settings == null) {
-                throw new ArgumentNullException(nameof(settings));
-            }
-
+            context.NotNull(nameof(context));
             var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
-
             ftpClient.DeleteFile(serverUri, settings);
-        }
+        }        
     }
 }
