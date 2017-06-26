@@ -6,14 +6,14 @@
     <title>Cake.Ftp</title>
     <authors>Jamie Phillips</authors>
     <owners>Jamie Phillips</owners>
-    <licenseUrl>https://github.com/phillipsj/Cake.Ftp</licenseUrl>
-    <projectUrl>https://github.com/phillipsj/Cake.Ftp</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/cake-build/graphics/master/png/cake-small.png</iconUrl>
+    <licenseUrl>https://github.com/cake-contrib/Cake.Ftp/blob/develop/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/cake-contrib/Cake.Ftp</projectUrl>
+    <iconUrl>https://cdn.rawgit.com/cake-contrib/graphics/a5cf0f881c390650144b2243ae551d5b9f836196/png/cake-contrib-medium.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Cake Addin for working with FTP from a Cake script.</description>
-    <releaseNotes>Initial Release</releaseNotes>
+    <releaseNotes>Release</releaseNotes>
     <copyright>Copyright (c) Jamie Phillips 2016 - Present</copyright>
-    <tags>CakeFtp, Cake, Ftp, Script, Build, Netlify, Addin</tags>
+    <tags>CakeFtp, Cake, Ftp, Script, Build, Addin</tags>
   </metadata>
   <files>
     <file src="Cake.Ftp.dll" target="lib\net45" />
