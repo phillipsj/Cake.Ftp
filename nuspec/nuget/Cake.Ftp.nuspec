@@ -16,8 +16,8 @@
     <tags>CakeFtp, Cake, Ftp, Script, Build, Addin</tags>
   </metadata>
   <files>
-    <file src="Cake.Ftp.dll" target="lib\net45" />
-    <file src="Cake.Ftp.pdb" target="lib\net45" />
-    <file src="Cake.Ftp.xml" target="lib\net45" />
+    <file src="netstandard2.0\Cake.Ftp.dll" target="lib\netstandard2.0" />
+    <file src="netstandard2.0\Cake.Ftp.pdb" target="lib\netstandard2.0" />
+    <file src="netstandard2.0\Cake.Ftp.xml" target="lib\netstandard2.0" />
   </files>
 </package>

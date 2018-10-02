@@ -8,7 +8,9 @@ BuildParameters.SetParameters(context: Context,
                             title: "Cake.Ftp",
                             repositoryOwner: "cake-contrib",
                             repositoryName: "Cake.Ftp",
-                            appVeyorAccountName: "cakecontrib");
+                            appVeyorAccountName: "cakecontrib",
+                            shouldRunDupFinder: false,
+                            shouldRunInspectCode: false);
 
 BuildParameters.PrintParameters(Context);
 
@@ -18,4 +20,4 @@ ToolSettings.SetToolSettings(context: Context,
                             testCoverageFilter: "+[*]* -[xunit.*]* -[Cake.Core]* -[Cake.Testing]* -[*.Tests]* ",
                             testCoverageExcludeByAttribute: "*.ExcludeFromCodeCoverage*",
                             testCoverageExcludeByFile: "*/*Designer.cs;*/*.g.cs;*/*.g.i.cs");
-Build.Run();
+Build.RunDotNetCore();

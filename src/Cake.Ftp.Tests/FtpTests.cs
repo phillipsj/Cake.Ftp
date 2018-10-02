@@ -1,7 +1,7 @@
 ﻿using System;
 using Cake.Ftp.Tests.Fixtures;
+using FluentAssertions;
 using Xunit;
-using Cake.Testing;
 
 namespace Cake.Ftp.Tests {
     public sealed class FtpTests {
@@ -15,8 +15,8 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
-                Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("fileSystem", ((ArgumentNullException)result).ParamName);
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                 .ParamName.Should().Equals("fileSystem");
             }
 
             [Fact]
@@ -28,8 +28,8 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
-                Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("environment", ((ArgumentNullException)result).ParamName);
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                .ParamName.Should().Equals("environment");
             }
 
             [Fact]
@@ -41,8 +41,8 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
-                Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("ftpService", ((ArgumentNullException)result).ParamName);
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                .ParamName.Should().Equals("ftpService");
             }
         }
 
@@ -56,8 +56,8 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
-                Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("serverUri", ((ArgumentNullException)result).ParamName);
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                   .ParamName.Should().Equals("serverUri");
             }
 
             [Fact]
@@ -69,8 +69,8 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
-                Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("fileToUpload", ((ArgumentNullException)result).ParamName);
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                  .ParamName.Should().Equals("fileToUpload");
             }
 
             [Fact]
@@ -82,8 +82,8 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
-                Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("Username", ((ArgumentNullException)result).ParamName);
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                   .ParamName.Should().Equals("Username");
             }
 
             [Fact]
@@ -95,8 +95,8 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
-                Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("Password", ((ArgumentNullException)result).ParamName);
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                   .ParamName.Should().Equals("Password");
             }
 
             [Fact]
@@ -108,8 +108,8 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
-                Assert.IsType<ArgumentOutOfRangeException>(result);
-                Assert.Equal("serverUri", ((ArgumentOutOfRangeException)result).ParamName);
+                result.Should().BeOfType<ArgumentOutOfRangeException>().Subject
+                    .ParamName.Should().Equals("serverUri");
             }
 
             [Fact]
@@ -121,7 +121,7 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
-                Assert.Equal(null, result);
+                result.Should().BeNull();
             }
         }
 
@@ -135,8 +135,9 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.DeleteFile());
 
                 // Then
-                Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("serverUri", ((ArgumentNullException)result).ParamName);
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                  .ParamName.Should().Equals("serverUri");
+
             }
 
             [Fact]
@@ -148,8 +149,8 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.DeleteFile());
 
                 // Then
-                Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("Username", ((ArgumentNullException)result).ParamName);
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                  .ParamName.Should().Equals("Username");
             }
 
             [Fact]
@@ -161,8 +162,8 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.DeleteFile());
 
                 // Then
-                Assert.IsType<ArgumentNullException>(result);
-                Assert.Equal("Password", ((ArgumentNullException)result).ParamName);
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                 .ParamName.Should().Equals("Password");
             }
 
             [Fact]
@@ -174,8 +175,8 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.DeleteFile());
 
                 // Then
-                Assert.IsType<ArgumentOutOfRangeException>(result);
-                Assert.Equal("serverUri", ((ArgumentOutOfRangeException)result).ParamName);
+                result.Should().BeOfType<ArgumentOutOfRangeException>().Subject
+                .ParamName.Should().Equals("serverUri");
             }
 
             [Fact]
@@ -187,7 +188,7 @@ namespace Cake.Ftp.Tests {
                 var result = Record.Exception(() => fixture.DeleteFile());
 
                 // Then
-                Assert.Equal(null, result);
+                result.Should().BeNull();
             }
         }
     }
