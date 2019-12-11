@@ -1,9 +1,11 @@
 ﻿using System;
-using System.IO;
+using System.ComponentModel;
 using System.Net;
+using System.Security.Authentication;
 using System.Text;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
+using FluentFTP;
 
 namespace Cake.Ftp.Services {
     /// <summary>
@@ -23,53 +25,134 @@ namespace Cake.Ftp.Services {
         /// <summary>
         /// Uploads a file.
         /// </summary>
-        /// <param name="serverUri">The URI for the FTP server.</param>
+        /// <param name="host">host of the FTP Client</param>
+        /// <param name="remotePath">path on the file on the server</param>
         /// <param name="uploadFile">The file to upload.</param>
-        /// <param name="username">The FTP username.</param>
-        /// <param name="password">The FTP password.</param>
-        public void UploadFile(Uri serverUri, IFile uploadFile, string username, string password) {
-            // Adding verbose logging for the URI being used.
-            _log.Verbose("Uploading file to {0}", serverUri);
-            // Creating the request
-            var request = (FtpWebRequest)WebRequest.Create(serverUri);
-            request.Method = WebRequestMethods.Ftp.UploadFile;
-            request.Credentials = new NetworkCredential(username, password);
+        /// <param name="settings">Ftp Settings</param>
+        public void UploadFile(string host, string remotePath, IFile uploadFile, FtpSettings settings) {
 
-            request.ContentLength = uploadFile.Length;
+            using (var client = CreateClient(host, settings)) {
+                Connect(client, settings.AutoDetectConnectionSettings);
 
-            using (var stream = new FileStream(uploadFile.Path.FullPath, FileMode.Open, FileAccess.Read))
-            {
-                var requestStream = request.GetRequestStream();
-                stream.CopyTo(requestStream);
-                requestStream.Close();
-
-                // Getting the response from the FTP server.
-                var response = (FtpWebResponse)request.GetResponse();
-
-                // Logging if it completed and the description of the status returned.
-                _log.Information("File upload complete, status {0}", response.StatusDescription);
-                response.Close();
+                client.UploadFile(uploadFile.Path.FullPath, remotePath, Translate(settings.FileExistsBehavior), settings.CreateRemoteDirectory);
+                client.Disconnect();
             }
         }
 
         /// <summary>
         /// Deletes a file.
         /// </summary>
-        /// <param name="serverUri">The URI for the FTP server.</param>
-        /// <param name="username">The FTP username.</param>
-        /// <param name="password">The FTP password.</param>
-        public void DeleteFile(Uri serverUri, string username, string password) {
-            var request = (FtpWebRequest)WebRequest.Create(serverUri);
-            request.Method = WebRequestMethods.Ftp.DeleteFile;
+        /// <param name="host">host of the FTP Client</param>
+        /// <param name="remotePath">path on the file on the server</param>
+        /// <param name="settings">Ftp Settings</param>
+        public void DeleteFile(string host, string remotePath, FtpSettings settings) {
 
-            // Adding verbose logging for credentials used.
-            _log.Verbose("Using the following credentials {0}, {1}", username, password);
-            request.Credentials = new NetworkCredential(username, password);
+            using (var client = CreateClient(host, settings)) {
+                Connect(client, settings.AutoDetectConnectionSettings);
 
-            var response = (FtpWebResponse)request.GetResponse();
-            // Logging if it completed and the description of the status returned.
-            _log.Information("File upload complete, status {0}", response.StatusDescription);
-            response.Close();
+                client.DeleteFile(remotePath);
+                client.Disconnect();
+            }
+
         }
+
+        private FluentFTP.FtpClient CreateClient(string host, FtpSettings settings) {
+            var client = new FluentFTP.FtpClient(host, new NetworkCredential(settings.Username, settings.Password));
+            client.OnLogEvent += OnLogEvent;
+
+            client.ValidateAnyCertificate = settings.ValidateAnyCertificate;
+            
+            if (settings.AutoDetectConnectionSettings) 
+                return client;
+
+            client.EncryptionMode = Translate(settings.EncryptionMode);
+            client.SslProtocols = settings.SslProtocols;
+            client.DataConnectionType = Translate(settings.DataConnectionType);
+
+            return client;
+        }
+
+        private void Connect(FluentFTP.FtpClient client, bool autoDetectConnectionSettings) {
+            if (autoDetectConnectionSettings) {
+                client.AutoConnect();
+            }
+            else {
+                client.Connect();
+            }
+        }
+
+        private void OnLogEvent(FtpTraceLevel level, string message) {
+            switch (level) {
+                case FtpTraceLevel.Error: {
+                    _log.Error(message);
+                    break;
+                }
+                case FtpTraceLevel.Warn: {
+                    _log.Warning(message);
+                    break;
+                }
+                case FtpTraceLevel.Info: {
+                    _log.Information(message);
+                    break;
+                }
+                case FtpTraceLevel.Verbose: {
+                    _log.Verbose(message);
+                    break;
+                }
+            }
+        }
+
+        private FluentFTP.FtpExists Translate(FtpExists ftpExists) {
+            switch (ftpExists) {
+                case FtpExists.Append:
+                    return FluentFTP.FtpExists.Append;
+                case FtpExists.AppendNoCheck:
+                    return FluentFTP.FtpExists.AppendNoCheck;
+                case FtpExists.NoCheck :
+                    return FluentFTP.FtpExists.NoCheck;
+                case FtpExists.Overwrite:
+                    return FluentFTP.FtpExists.Overwrite;
+                case FtpExists.Skip:
+                    return FluentFTP.FtpExists.Skip;
+            }
+
+            throw new InvalidEnumArgumentException($"{nameof(FtpExists)} enum value {ftpExists} is invalid as it has not been mapped");
+        }
+
+        private FluentFTP.FtpEncryptionMode Translate(FtpEncryptionMode ftpEncryptionMode)
+        {
+            switch (ftpEncryptionMode)
+            {
+                case FtpEncryptionMode.Explicit:
+                    return FluentFTP.FtpEncryptionMode.Explicit;
+                case FtpEncryptionMode.Implicit:
+                    return FluentFTP.FtpEncryptionMode.Implicit;
+                case FtpEncryptionMode.None:
+                    return FluentFTP.FtpEncryptionMode.None;
+            }
+
+            throw new InvalidEnumArgumentException($"{nameof(FtpEncryptionMode)} enum value {ftpEncryptionMode} is invalid as it has not been mapped");
+        }
+
+        private FluentFTP.FtpDataConnectionType Translate(FtpDataConnectionType ftpDataConnectionType) {
+            switch (ftpDataConnectionType) {
+                case FtpDataConnectionType.AutoActive:
+                    return FluentFTP.FtpDataConnectionType.AutoActive;
+                case FtpDataConnectionType.AutoPassive:
+                    return FluentFTP.FtpDataConnectionType.AutoPassive;
+                case FtpDataConnectionType.EPRT:
+                    return FluentFTP.FtpDataConnectionType.EPRT;
+                case FtpDataConnectionType.EPSV:
+                    return FluentFTP.FtpDataConnectionType.EPSV;
+                case FtpDataConnectionType.PASV:
+                    return FluentFTP.FtpDataConnectionType.PASV;
+                case FtpDataConnectionType.PASVEX:
+                    return FluentFTP.FtpDataConnectionType.PASVEX;
+                case FtpDataConnectionType.PORT:
+                    return FluentFTP.FtpDataConnectionType.PORT;
+            }
+            throw new InvalidEnumArgumentException($"{nameof(FtpDataConnectionType)} enum value {ftpDataConnectionType} is invalid as it has not been mapped");
+        }
+
     }
 }

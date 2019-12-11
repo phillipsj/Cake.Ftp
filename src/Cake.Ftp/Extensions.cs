@@ -34,18 +34,5 @@ namespace Cake.Ftp {
                 throw new ArgumentOutOfRangeException(parameterName);
             }
         }
-
-        /// <summary>
-        /// Throws an exception if the specified parameter's value does not match FTP URI scheme.
-        /// </summary>
-        /// <param name="value">The value of the argument.</param>
-        /// <param name="parameterName">The name of the parameter to include in any thrown exception.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is <c>null</c></exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is empty or consists only of white-space characters</exception>       
-        public static void NotFtpUriScheme([ValidatedNotNull]this Uri value, string parameterName) {
-            if (value.Scheme != Uri.UriSchemeFtp) {
-                throw new ArgumentOutOfRangeException(parameterName, "Server URI scheme is not FTP.");
-            }
-        }
     }
 }

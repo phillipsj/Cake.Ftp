@@ -12,7 +12,9 @@ namespace Cake.Ftp.Tests.Fixtures {
         public ICakeEnvironment Environment { get; set; }
         public ICakeLog Log { get; set; }
         public IFtpService FtpService { get; set; }
-        public Uri ServerUri { get; set; }
+
+        public string Host { get; set; }
+        public string RemotePath { get; set; }
         public FilePath FileToUpload { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
@@ -32,19 +34,20 @@ namespace Cake.Ftp.Tests.Fixtures {
             Environment = environment;
             Username = "username";
             Password = "password";
-            ServerUri = new Uri("ftp://my.server.com/test.html");
+            Host = "my.server.com";
+            RemotePath = "/test.html";
         }
 
         public void UploadFile() {
             var ftpClient = new FtpClient(FileSystem, Environment, FtpService);
             var settings = new FtpSettings() {Username = Username, Password = Password};
-            ftpClient.UploadFile(ServerUri, FileToUpload, settings);
+            ftpClient.UploadFile(Host, RemotePath, FileToUpload, settings);
         }
 
         public void DeleteFile() {
             var ftpClient = new FtpClient(FileSystem, Environment, FtpService);
             var settings = new FtpSettings() { Username = Username, Password = Password };
-            ftpClient.DeleteFile(ServerUri, settings);
+            ftpClient.DeleteFile(Host, RemotePath, settings);
         }
     }
 }

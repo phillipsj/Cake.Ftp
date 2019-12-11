@@ -33,35 +33,37 @@ namespace Cake.Ftp {
         /// <summary>
         /// Uploads file to specified location using the supplied credentials.
         /// </summary>
-        /// <param name="serverUri">FTP Service URI.</param>
+        /// <param name="host">host of the FTP Client</param>
+        /// <param name="remotePath">path on the file on the server</param>
         /// <param name="fileToUpload">The file to upload.</param>
         /// <param name="settings">The settings.</param>
-        public void UploadFile(Uri serverUri, FilePath fileToUpload, FtpSettings settings) {
-            CheckParams(serverUri, settings);
+        public void UploadFile(string host, string remotePath, FilePath fileToUpload, FtpSettings settings) {
+            CheckParams(host, remotePath, settings);
             fileToUpload.NotNull(nameof(fileToUpload));
 
             var file = _fileSystem.GetFile(fileToUpload);
-            _ftpService.UploadFile(serverUri, file, settings.Username, settings.Password);
+            _ftpService.UploadFile(host, remotePath, file, settings);
         }
 
         /// <summary>
         /// Deletes a file at the specified URI.
         /// </summary>
-        /// <param name="serverUri">FTP File URI.</param>
+        /// <param name="host">host of the FTP Client</param>
+        /// <param name="remotePath">path on the file on the server</param>
         /// <param name="settings">The settings.</param>
-        public void DeleteFile(Uri serverUri, FtpSettings settings) {
-            CheckParams(serverUri, settings);
+        public void DeleteFile(string host, string remotePath, FtpSettings settings) {
+            CheckParams(host, remotePath, settings);
 
-            _ftpService.DeleteFile(serverUri, settings.Username, settings.Password);
+            _ftpService.DeleteFile(host, remotePath, settings);
         }
         
-        private void CheckParams(Uri serverUri, FtpSettings settings) {
-            serverUri.NotNull(nameof(serverUri));
+        private void CheckParams(string host, string remotePath, FtpSettings settings)
+        {
+            host.NotNullOrWhiteSpace(nameof(host));
+            remotePath.NotNullOrWhiteSpace(nameof(host));
             settings.Username.NotNullOrWhiteSpace(nameof(settings.Username));
             settings.Password.NotNullOrWhiteSpace(nameof(settings.Password));
-            serverUri.NotFtpUriScheme(nameof(serverUri));
         }
 
-        private void GetFile() { throw new NotImplementedException();}
     }
 }
