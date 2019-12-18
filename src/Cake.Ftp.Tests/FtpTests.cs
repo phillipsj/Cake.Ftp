@@ -48,16 +48,30 @@ namespace Cake.Ftp.Tests {
 
         public sealed class TheUploadFileMethod {
             [Fact]
-            public void Should_Throw_If_Server_Uri_Is_Null() {
+            public void Should_Throw_If_Host_Is_Null() {
                 // Given
-                var fixture = new FtpClientFixture { ServerUri = null };
+                var fixture = new FtpClientFixture { Host = null };
 
                 // When 
                 var result = Record.Exception(() => fixture.UploadFile());
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                   .ParamName.Should().Equals("serverUri");
+                   .ParamName.Should().Equals("host");
+            }
+
+            [Fact]
+            public void Should_Throw_If_RemotePath_Is_Null()
+            {
+                // Given
+                var fixture = new FtpClientFixture { RemotePath = null };
+
+                // When 
+                var result = Record.Exception(() => fixture.UploadFile());
+
+                // Then
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                    .ParamName.Should().Equals("remotePath");
             }
 
             [Fact]
@@ -100,19 +114,6 @@ namespace Cake.Ftp.Tests {
             }
 
             [Fact]
-            public void Should_Throw_If_Url_Is_Not_FTP_Scheme() {
-                // Given
-                var fixture = new FtpClientFixture { ServerUri = new Uri("http://my.server.com/test.html") };
-
-                // When 
-                var result = Record.Exception(() => fixture.UploadFile());
-
-                // Then
-                result.Should().BeOfType<ArgumentOutOfRangeException>().Subject
-                    .ParamName.Should().Equals("serverUri");
-            }
-
-            [Fact]
             public void Should_Upload_File_Without_Error() {
                 // Given
                 var fixture = new FtpClientFixture();
@@ -125,19 +126,34 @@ namespace Cake.Ftp.Tests {
             }
         }
 
-        public sealed class TheDeleteFileMethod {
+        public sealed class TheDeleteFileMethod
+        {
             [Fact]
-            public void Should_Throw_If_Server_Uri_Is_Null() {
+            public void Should_Throw_If_Host_Is_Null()
+            {
                 // Given
-                var fixture = new FtpClientFixture { ServerUri = null };
+                var fixture = new FtpClientFixture { Host = null };
 
                 // When 
                 var result = Record.Exception(() => fixture.DeleteFile());
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                  .ParamName.Should().Equals("serverUri");
+                    .ParamName.Should().Equals("host");
+            }
 
+            [Fact]
+            public void Should_Throw_If_RemotePath_Is_Null()
+            {
+                // Given
+                var fixture = new FtpClientFixture { RemotePath = null };
+
+                // When 
+                var result = Record.Exception(() => fixture.DeleteFile());
+
+                // Then
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                    .ParamName.Should().Equals("remotePath");
             }
 
             [Fact]
@@ -164,19 +180,6 @@ namespace Cake.Ftp.Tests {
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
                  .ParamName.Should().Equals("Password");
-            }
-
-            [Fact]
-            public void Should_Throw_If_Url_Is_Not_FTP_Scheme() {
-                // Given
-                var fixture = new FtpClientFixture { ServerUri = new Uri("http://my.server.com/test.html") };
-
-                // When 
-                var result = Record.Exception(() => fixture.DeleteFile());
-
-                // Then
-                result.Should().BeOfType<ArgumentOutOfRangeException>().Subject
-                .ParamName.Should().Equals("serverUri");
             }
 
             [Fact]

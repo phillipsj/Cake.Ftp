@@ -9,18 +9,18 @@ namespace Cake.Ftp.Services {
         /// <summary>
         /// Uploads a file.
         /// </summary>
-        /// <param name="serverUri">The URI for the FTP server.</param>
+        /// <param name="host">host of the FTP Client</param>
+        /// <param name="remotePath">path on the file on the server</param>
         /// <param name="fileToUpload">The file to upload.</param>
-        /// <param name="username">The FTP username.</param>
-        /// <param name="password">The FTP password.</param>
-        void UploadFile(Uri serverUri, IFile fileToUpload, string username, string password);
-        
+        /// <param name="settings">Ftp Settings</param>
+        void UploadFile(string host, string remotePath, IFile fileToUpload, FtpSettings settings);
+
         /// <summary>
         /// Deletes a file.
         /// </summary>
-        /// <param name="serverUri">The URI for the FTP server.</param>
-        /// <param name="username">The FTP username.</param>
-        /// <param name="password">The FTP password.</param>
-        void DeleteFile(Uri serverUri, string username, string password);
+        /// <param name="host">host of the FTP Client</param>
+        /// <param name="remotePath">path on the file on the server</param>
+        /// <param name="settings">Ftp Settings</param>
+        void DeleteFile(string host, string remotePath, FtpSettings settings);
     }
 }
