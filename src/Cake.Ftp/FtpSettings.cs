@@ -5,7 +5,10 @@ namespace Cake.Ftp {
     /// Contains settings used by <see cref="FtpClient"/>
     /// </summary>
     public sealed class FtpSettings {
-
+        
+        /// <summary>
+        /// The constructor.
+        /// </summary>
         public FtpSettings() {
             FileExistsBehavior = FtpExists.Overwrite;
             EncryptionMode = FtpEncryptionMode.None;
