@@ -64,11 +64,25 @@ Task("Delete-File")
         Information("Deleting ...");
 
         var settings = new FtpSettings() {
-            Username = "CakeTest",
-            Password = "CakeTestPassword"
+            Username = "************",
+            Password = "************"
         };
 
         FtpDeleteFile("www.myweb.com", "test/test2.txt", settings);
+
+    });
+
+Task("Upload-Directory")
+    .Does(() => {
+        Information("Uploading Directory ...");
+
+        var settings = new FtpSettings() {
+            Username = "************",
+            Password = "************"
+        };
+
+        var directoryToUpload = Directory("./artifacts/");
+        FtpUploadDirectory("www.myweb.com", "/httpdocs/", directoryToUpload, settings);
 
     });
 
