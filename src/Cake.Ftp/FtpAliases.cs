@@ -117,27 +117,6 @@ namespace Cake.Ftp {
         {
             context.NotNull(nameof(context));
 
-            var blacklistedFoldersRule = new List<string>(FtpFolderNameRule.CommonBlacklistedFolders)
-            {
-                "DBChanges",
-                "Config",
-                "umbraco",
-                "umbraco_client",
-                "Media"
-            };
-
-            var blacklistedFilesRule = new List<string>(FtpFolderNameRule.CommonBlacklistedFolders)
-            {
-                "Web.config",
-                "packages.config",
-                "compilerconfig.json",
-                "compilerconfig.json.defaults",
-            };
-            var excludeRules = new List<FtpRule>{
-                new FtpFolderNameRule(false, blacklistedFoldersRule), //`.git`, `.svn`, `node_modules` etc,
-                new FtpFileNameRule(false, blacklistedFilesRule)
-            };
-
             var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
             ftpClient.UploadFolder(host, remoteFolder, localFolder, settings, rules, process, ftpFolderSyncMode, ftpRemoteExists, ftpVerify);
         }
