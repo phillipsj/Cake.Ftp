@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Cake.Core;
 using Cake.Core.IO;
 using Cake.Ftp.Services;
+using FluentFTP;
+using FluentFTP.Rules;
 
 namespace Cake.Ftp {
     /// <summary>
@@ -43,6 +46,30 @@ namespace Cake.Ftp {
 
             var file = _fileSystem.GetFile(fileToUpload);
             _ftpService.UploadFile(host, remotePath, file, settings);
+        }
+
+        /// <summary>
+        /// Upload and Overwite remote folder with local folder for default
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="remoteFolder"></param>
+        /// <param name="localFolder"></param>
+        /// <param name="settings"></param>
+        /// <param name="rules"></param>
+        /// <param name="process"></param>
+        /// <param name="ftpFolderSyncMode"></param>
+        /// <param name="ftpRemoteExists"></param>
+        /// <param name="ftpVerify"></param>
+        /// <returns></returns>
+        public List<FtpResult> UploadFolder(string host, string remoteFolder, string localFolder, FtpSettings settings,
+            List<FtpRule> rules = null, Action<FtpProgress> process = null,
+            FtpFolderSyncMode ftpFolderSyncMode = FtpFolderSyncMode.Mirror, FtpRemoteExists ftpRemoteExists = FtpRemoteExists.Overwrite, FtpVerify ftpVerify = FtpVerify.None
+            )
+        {
+            CheckParams(host, remoteFolder, settings);
+            localFolder.NotNull(nameof(localFolder));            
+            
+            return _ftpService.UpdateFolder(host, remoteFolder, localFolder, settings, rules, process, ftpFolderSyncMode, ftpRemoteExists, ftpVerify);
         }
 
         /// <summary>

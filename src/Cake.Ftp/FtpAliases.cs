@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using Cake.Core;
 using Cake.Core.Annotations;
 using Cake.Core.IO;
 using Cake.Ftp.Services;
+using FluentFTP;
+using FluentFTP.Rules;
 
 namespace Cake.Ftp {
     /// <summary>
@@ -92,6 +95,51 @@ namespace Cake.Ftp {
             context.NotNull(nameof(context));
             var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
             ftpClient.UploadFile(host, remotePath, fileToUpload, settings);
+        }
+
+        /// <summary>
+        /// Upload and Overwite remote folder with local folder for default
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="host"></param>
+        /// <param name="remoteFolder"></param>
+        /// <param name="localFolder"></param>
+        /// <param name="settings"></param>
+        /// <param name="rules"></param>
+        /// <param name="process"></param>
+        /// <param name="ftpFolderSyncMode"></param>
+        /// <param name="ftpRemoteExists"></param>
+        /// <param name="ftpVerify"></param>
+        [CakeMethodAlias]
+        public static void FtpUploadFolder(this ICakeContext context, string host, string remoteFolder, string localFolder, FtpSettings settings,
+            List<FtpRule> rules = null, Action<FtpProgress> process = null,
+            FtpFolderSyncMode ftpFolderSyncMode = FtpFolderSyncMode.Mirror, FtpRemoteExists ftpRemoteExists = FtpRemoteExists.Overwrite, FtpVerify ftpVerify = FtpVerify.None)
+        {
+            context.NotNull(nameof(context));
+
+            var blacklistedFoldersRule = new List<string>(FtpFolderNameRule.CommonBlacklistedFolders)
+            {
+                "DBChanges",
+                "Config",
+                "umbraco",
+                "umbraco_client",
+                "Media"
+            };
+
+            var blacklistedFilesRule = new List<string>(FtpFolderNameRule.CommonBlacklistedFolders)
+            {
+                "Web.config",
+                "packages.config",
+                "compilerconfig.json",
+                "compilerconfig.json.defaults",
+            };
+            var excludeRules = new List<FtpRule>{
+                new FtpFolderNameRule(false, blacklistedFoldersRule), //`.git`, `.svn`, `node_modules` etc,
+                new FtpFileNameRule(false, blacklistedFilesRule)
+            };
+
+            var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
+            ftpClient.UploadFolder(host, remoteFolder, localFolder, settings, rules, process, ftpFolderSyncMode, ftpRemoteExists, ftpVerify);
         }
 
         /// <summary>

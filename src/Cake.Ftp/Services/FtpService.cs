@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Security.Authentication;
@@ -6,6 +7,7 @@ using System.Text;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using FluentFTP;
+using FluentFTP.Rules;
 
 namespace Cake.Ftp.Services {
     /// <summary>
@@ -56,6 +58,34 @@ namespace Cake.Ftp.Services {
 
         }
 
+        /// <summary>
+        /// Upload and Overwite remote folder with local folder for default
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="remoteFolder"></param>
+        /// <param name="localFolder"></param>
+        /// <param name="settings"></param>
+        /// <param name="ftpFolderSyncMode"></param>
+        /// <param name="ftpRemoteExists"></param>
+        /// <param name="ftpVerify"></param>
+        /// <param name="rules"></param>
+        /// <param name="process"></param>
+        /// <returns></returns>
+        public List<FtpResult> UpdateFolder(string host, string remoteFolder, string localFolder, FtpSettings settings,
+            List<FtpRule> rules = null, Action<FtpProgress> process = null,
+            FtpFolderSyncMode ftpFolderSyncMode  = FtpFolderSyncMode.Mirror, FtpRemoteExists ftpRemoteExists = FtpRemoteExists.Overwrite, FtpVerify ftpVerify = FtpVerify.None
+            )
+        {
+            using (var client = CreateClient(host, settings))
+            {
+                Connect(client, settings.AutoDetectConnectionSettings);
+
+                var result = client.UploadDirectory(localFolder, remoteFolder, ftpFolderSyncMode, ftpRemoteExists, ftpVerify, rules, process);
+                client.Disconnect();                
+                return result;
+            }
+        }
+
         private FluentFTP.FtpClient CreateClient(string host, FtpSettings settings) {
             var client = new FluentFTP.FtpClient(host, new NetworkCredential(settings.Username, settings.Password));
             client.OnLogEvent += OnLogEvent;
@@ -102,18 +132,18 @@ namespace Cake.Ftp.Services {
             }
         }
 
-        private FluentFTP.FtpExists Translate(FtpExists ftpExists) {
+        private FtpRemoteExists Translate(FtpExists ftpExists) {
             switch (ftpExists) {
                 case FtpExists.Append:
-                    return FluentFTP.FtpExists.Append;
+                    return FtpRemoteExists.Append;
                 case FtpExists.AppendNoCheck:
-                    return FluentFTP.FtpExists.AppendNoCheck;
+                    return FtpRemoteExists.AppendNoCheck;
                 case FtpExists.NoCheck :
-                    return FluentFTP.FtpExists.NoCheck;
+                    return FtpRemoteExists.NoCheck;
                 case FtpExists.Overwrite:
-                    return FluentFTP.FtpExists.Overwrite;
+                    return FtpRemoteExists.Overwrite;
                 case FtpExists.Skip:
-                    return FluentFTP.FtpExists.Skip;
+                    return FtpRemoteExists.Skip;
             }
 
             throw new InvalidEnumArgumentException($"{nameof(FtpExists)} enum value {ftpExists} is invalid as it has not been mapped");
