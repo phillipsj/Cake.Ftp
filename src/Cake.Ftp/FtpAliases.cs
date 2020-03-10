@@ -211,5 +211,21 @@ namespace Cake.Ftp {
             var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
             ftpClient.DeleteFile(host, remotePath, settings);
         }
+
+        /// <summary>
+        /// Download file
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="host"></param>
+        /// <param name="remotePath"></param>
+        /// <param name="localPath"></param>
+        /// <param name="settings"></param>
+        [CakeMethodAlias]
+        public static void FtpDownloadFile(this ICakeContext context, string host, string remotePath, string localPath, FtpSettings settings)
+        {
+            context.NotNull(nameof(context));
+            var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
+            ftpClient.DownloadFile(host, remotePath, localPath, settings);
+        }
     }
 }

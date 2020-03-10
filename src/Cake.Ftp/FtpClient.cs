@@ -100,7 +100,22 @@ namespace Cake.Ftp {
             
             _ftpService.DeleteFile(host, remotePath, settings);
         }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="remotePath"></param>
+        /// <param name="localPath"></param>
+        /// <param name="settings"></param>
+        public void DownloadFile(string host, string remotePath, string localPath, FtpSettings settings)
+        {
+            CheckParams(host, remotePath, settings);
+            localPath.NotNullOrWhiteSpace(nameof(localPath));
+            
+            _ftpService.DownloadFile(host, remotePath, localPath, settings);
+        }
+
         private void CheckParams(string host, string remotePath, FtpSettings settings)
         {
             host.NotNullOrWhiteSpace(nameof(host));

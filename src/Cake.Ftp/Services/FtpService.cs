@@ -268,6 +268,24 @@ namespace Cake.Ftp.Services {
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="remotePath"></param>
+        /// <param name="localPath"></param>
+        /// <param name="settings"></param>
+        public void DownloadFile(string host, string remotePath, string localPath, FtpSettings settings)
+        {
+            using (var client = CreateClient(host, settings))
+            {
+                Connect(client, settings.AutoDetectConnectionSettings);
+                client.RetryAttempts = 3;
+                client.DownloadFile(localPath, remotePath, FtpLocalExists.Overwrite, FtpVerify.Retry | FtpVerify.Throw);
+                client.Disconnect();
+            }
+        }
+
     }
 
     /// <summary>
