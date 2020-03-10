@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
+using System.IO;
 using System.Net;
-using System.Security.Authentication;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using FluentFTP;
@@ -34,8 +36,8 @@ namespace Cake.Ftp.Services {
         public void UploadFile(string host, string remotePath, IFile uploadFile, FtpSettings settings) {
 
             using (var client = CreateClient(host, settings)) {
-                Connect(client, settings.AutoDetectConnectionSettings);
-
+                Connect(client, settings.AutoDetectConnectionSettings);   
+                
                 client.UploadFile(uploadFile.Path.FullPath, remotePath, Translate(settings.FileExistsBehavior), settings.CreateRemoteDirectory);
                 client.Disconnect();
             }
@@ -79,7 +81,7 @@ namespace Cake.Ftp.Services {
             using (var client = CreateClient(host, settings))
             {
                 Connect(client, settings.AutoDetectConnectionSettings);
-
+                
                 var result = client.UploadDirectory(localFolder, remoteFolder, ftpFolderSyncMode, ftpRemoteExists, ftpVerify, rules, process);
                 client.Disconnect();                
                 return result;
@@ -184,5 +186,232 @@ namespace Cake.Ftp.Services {
             throw new InvalidEnumArgumentException($"{nameof(FtpDataConnectionType)} enum value {ftpDataConnectionType} is invalid as it has not been mapped");
         }
 
+        /// <summary>
+        /// Parallel upload folder
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="sourcePath"></param>
+        /// <param name="remotePath"></param>
+        /// <param name="settings"></param>
+        /// <param name="parallel"></param>
+        /// <param name="ignoreRule">Ignore rules.-i: relativePath</param>
+        public void UploadFolderParallel(string host, string remotePath, string sourcePath, FtpSettings settings, int parallel = 5, Func<string, bool> ignoreRule = null)
+        {
+            if (parallel < 1) parallel = 5;
+            try
+            {
+                var cancellationToken = new CancellationTokenSource();
+                var sourceFolder = new DirectoryInfo(sourcePath);
+                var fileSystemInfos = sourceFolder.EnumerateFileSystemInfos("*", SearchOption.AllDirectories);                                
+                var _taskScheduler = new LimitedConcurrencyLevelTaskScheduler(parallel);
+                var taskList = new List<Task>();
+                
+                foreach (var fileInfo in fileSystemInfos)
+                {
+                    if (fileInfo.FullName == sourceFolder.FullName) { continue; }
+                    var currentFile = fileInfo; //It's because the task shows the value of i at the time that the task is executed, not when the task was created.
+                    var relativePath = Uri.UnescapeDataString(currentFile.FullName.Remove(0, sourceFolder.FullName.Length));                    
+
+                    if (ignoreRule != null && ignoreRule(relativePath)) { continue; }
+
+                    var remoteRelativePath = string.Concat(remotePath, relativePath.Replace("\\", "/"));
+
+                    Task task = Task.Factory.StartNew(() =>
+                    {                        
+                        try
+                        {
+                            using (var client = CreateClient(host, settings))
+                            {
+                                if (currentFile.Attributes == FileAttributes.Directory)
+                                {
+                                    client.Connect();
+                                    client.SetWorkingDirectory(relativePath);
+                                }
+                                else
+                                {
+                                    _log.Information(DateTime.Now + "  Transfer of file " + remoteRelativePath +
+                                                      " started " + Environment.NewLine);
+                                    
+                                    client.TransferChunkSize = 10000;
+                                    client.UploadDataType = FtpDataType.Binary;
+                                    client.RetryAttempts = 3;
+
+                                    var fileUploadedResult = client.UploadFile(currentFile.FullName, remoteRelativePath, FtpRemoteExists.Append, true, FtpVerify.Retry | FtpVerify.Throw);
+
+                                    if (fileUploadedResult.IsSuccess())
+                                    {
+                                        _log.Information(DateTime.Now + "  Transfer of file " + remoteRelativePath +
+                                                          " done" + Environment.NewLine);                                        
+                                    }
+                                }
+                                client.Disconnect();
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            _log.Error(DateTime.Now.ToString(CultureInfo.InvariantCulture) +
+                                            "Error in Uploading file " + remoteRelativePath + " " + ex.Message +
+                                            Environment.NewLine + ex.InnerException + Environment.NewLine +
+                                            ex.StackTrace);
+                        }                        
+                    }, cancellationToken.Token, TaskCreationOptions.AttachedToParent, _taskScheduler);
+                    taskList.Add(task);                    
+                }
+                Task.WaitAll(taskList.ToArray(), cancellationToken.Token);
+
+                _log.Information(DateTime.Now + " Upload done");
+            }
+            catch (Exception ex)
+            {
+                _log.Error(DateTime.Now.ToString(CultureInfo.InvariantCulture) + "Error in Uploading file: " + sourcePath + " " + ex.Message + Environment.NewLine + ex.InnerException + Environment.NewLine + ex.StackTrace);
+            }
+        }
+
+    }
+
+    /// <summary>
+    /// Provides a task scheduler that ensures a maximum concurrency level while running on top of the thread pool.
+    /// https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler?view=netframework-4.8
+    /// </summary>
+    public class LimitedConcurrencyLevelTaskScheduler : TaskScheduler
+    {
+        // Indicates whether the current thread is processing work items.
+        [ThreadStatic]
+        private static bool _currentThreadIsProcessingItems;
+
+        // The list of tasks to be executed 
+        private readonly LinkedList<Task> _tasks = new LinkedList<Task>(); // protected by lock(_tasks)
+
+        // The maximum concurrency level allowed by this scheduler. 
+        private readonly int _maxDegreeOfParallelism;
+
+        // Indicates whether the scheduler is currently processing work items. 
+        private int _delegatesQueuedOrRunning = 0;
+
+        /// <summary>
+        /// Creates a new instance with the specified degree of parallelism. 
+        /// </summary>
+        /// <param name="maxDegreeOfParallelism"></param>
+        public LimitedConcurrencyLevelTaskScheduler(int maxDegreeOfParallelism)
+        {
+            if (maxDegreeOfParallelism < 1) throw new ArgumentOutOfRangeException("maxDegreeOfParallelism");
+            _maxDegreeOfParallelism = maxDegreeOfParallelism;
+        }
+
+        /// <summary>
+        /// Queues a task to the scheduler.
+        /// </summary>
+        /// <param name="task"></param>
+        protected sealed override void QueueTask(Task task)
+        {
+            // Add the task to the list of tasks to be processed.  If there aren't enough 
+            // delegates currently queued or running to process tasks, schedule another. 
+            lock (_tasks)
+            {
+                _tasks.AddLast(task);
+                if (_delegatesQueuedOrRunning < _maxDegreeOfParallelism)
+                {
+                    ++_delegatesQueuedOrRunning;
+                    NotifyThreadPoolOfPendingWork();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Inform the ThreadPool that there's work to be executed for this scheduler. 
+        /// </summary>
+        private void NotifyThreadPoolOfPendingWork()
+        {
+            ThreadPool.UnsafeQueueUserWorkItem(_ =>
+            {
+                // Note that the current thread is now processing work items.
+                // This is necessary to enable inlining of tasks into this thread.
+                _currentThreadIsProcessingItems = true;
+                try
+                {
+                    // Process all available items in the queue.
+                    while (true)
+                    {
+                        Task item;
+                        lock (_tasks)
+                        {
+                            // When there are no more items to be processed,
+                            // note that we're done processing, and get out.
+                            if (_tasks.Count == 0)
+                            {
+                                --_delegatesQueuedOrRunning;
+                                break;
+                            }
+
+                            // Get the next item from the queue
+                            item = _tasks.First.Value;
+                            _tasks.RemoveFirst();
+                        }
+
+                        // Execute the task we pulled out of the queue
+                        base.TryExecuteTask(item);
+                    }
+                }
+                // We're done processing items on the current thread
+                finally { _currentThreadIsProcessingItems = false; }
+            }, null);
+        }
+
+        /// <summary>
+        /// Attempts to execute the specified task on the current thread. 
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="taskWasPreviouslyQueued"></param>
+        /// <returns></returns>
+        protected sealed override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
+        {
+            // If this thread isn't already processing a task, we don't support inlining
+            if (!_currentThreadIsProcessingItems) return false;
+
+            // If the task was previously queued, remove it from the queue
+            if (taskWasPreviouslyQueued)
+                // Try to run the task. 
+                if (TryDequeue(task))
+                    return base.TryExecuteTask(task);
+                else
+                    return false;
+            else
+                return base.TryExecuteTask(task);
+        }
+
+        /// <summary>
+        /// Attempt to remove a previously scheduled task from the scheduler. 
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        protected sealed override bool TryDequeue(Task task)
+        {
+            lock (_tasks) return _tasks.Remove(task);
+        }
+
+        /// <summary>
+        /// Gets the maximum concurrency level supported by this scheduler. 
+        /// </summary>
+        public sealed override int MaximumConcurrencyLevel { get { return _maxDegreeOfParallelism; } }
+
+        /// <summary>
+        /// Gets an enumerable of the tasks currently scheduled on this scheduler. 
+        /// </summary>
+        /// <returns></returns>
+        protected sealed override IEnumerable<Task> GetScheduledTasks()
+        {
+            bool lockTaken = false;
+            try
+            {
+                Monitor.TryEnter(_tasks, ref lockTaken);
+                if (lockTaken) return _tasks;
+                else throw new NotSupportedException();
+            }
+            finally
+            {
+                if (lockTaken) Monitor.Exit(_tasks);
+            }
+        }
     }
 }

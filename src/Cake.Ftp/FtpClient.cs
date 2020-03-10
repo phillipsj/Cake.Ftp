@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Cake.Core;
 using Cake.Core.IO;
 using Cake.Ftp.Services;
@@ -73,6 +74,22 @@ namespace Cake.Ftp {
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="remoteFolder"></param>
+        /// <param name="localFolder"></param>
+        /// <param name="settings"></param>
+        /// <param name="parallel"></param>
+        /// <param name="ignoreRule"></param>
+        public void UploadFolderParallel(string host, string remoteFolder, string localFolder, FtpSettings settings, int parallel = 5, Func<string, bool> ignoreRule = null)
+        {
+            CheckParams(host, remoteFolder, settings);
+            localFolder.NotNull(nameof(localFolder));
+            _ftpService.UploadFolderParallel(host, remoteFolder, localFolder, settings, parallel, ignoreRule);
+        }
+
+        /// <summary>
         /// Deletes a file at the specified URI.
         /// </summary>
         /// <param name="host">host of the FTP Client</param>
@@ -80,7 +97,7 @@ namespace Cake.Ftp {
         /// <param name="settings">The settings.</param>
         public void DeleteFile(string host, string remotePath, FtpSettings settings) {
             CheckParams(host, remotePath, settings);
-
+            
             _ftpService.DeleteFile(host, remotePath, settings);
         }
         

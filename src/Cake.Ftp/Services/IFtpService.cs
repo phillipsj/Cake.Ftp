@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Cake.Core.IO;
 using FluentFTP;
 using FluentFTP.Rules;
@@ -43,5 +44,16 @@ namespace Cake.Ftp.Services {
             List<FtpRule> rules = null, Action<FtpProgress> process = null,
             FtpFolderSyncMode ftpFolderSyncMode = FtpFolderSyncMode.Mirror, FtpRemoteExists ftpRemoteExists = FtpRemoteExists.Overwrite, FtpVerify ftpVerify = FtpVerify.None
             );
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="sourcePath"></param>
+        /// <param name="remotePath"></param>
+        /// <param name="settings"></param>
+        /// <param name="parallel"></param>
+        /// <param name="ignoreRule"></param>
+        void UploadFolderParallel(string host, string remotePath, string sourcePath, FtpSettings settings, int parallel = 5, Func<string, bool> ignoreRule = null);
     }
 }

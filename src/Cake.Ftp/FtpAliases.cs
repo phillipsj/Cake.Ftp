@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Cake.Core;
 using Cake.Core.Annotations;
 using Cake.Core.IO;
@@ -117,8 +118,27 @@ namespace Cake.Ftp {
         {
             context.NotNull(nameof(context));
 
-            var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
+            var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));            
             ftpClient.UploadFolder(host, remoteFolder, localFolder, settings, rules, process, ftpFolderSyncMode, ftpRemoteExists, ftpVerify);
+        }
+
+        /// <summary>
+        /// Upload folder parallel
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="host"></param>
+        /// <param name="remoteFolder"></param>
+        /// <param name="localFolder"></param>
+        /// <param name="settings"></param>
+        /// <param name="parallel"></param>
+        /// <param name="ignoreRule"></param>
+        [CakeMethodAlias]
+        public static void FtpUploadFolderParallel(this ICakeContext context, string host, string remoteFolder, string localFolder, FtpSettings settings, int parallel = 5, Func<string, bool> ignoreRule = null)
+        {
+            context.NotNull(nameof(context));            
+
+            var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
+            ftpClient.UploadFolderParallel(host, remoteFolder, localFolder, settings, parallel, ignoreRule);
         }
 
         /// <summary>
