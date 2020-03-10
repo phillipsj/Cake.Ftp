@@ -40,7 +40,7 @@ namespace Cake.Ftp.Services {
         /// <param name="rules"></param>
         /// <param name="process"></param>
         /// <returns></returns>
-        List<FtpResult> UpdateFolder(string host, string remoteFolder, string localFolder, FtpSettings settings,
+        List<FtpResult> UploadFolder(string host, string remoteFolder, string localFolder, FtpSettings settings,
             List<FtpRule> rules = null, Action<FtpProgress> process = null,
             FtpFolderSyncMode ftpFolderSyncMode = FtpFolderSyncMode.Mirror, FtpRemoteExists ftpRemoteExists = FtpRemoteExists.Overwrite, FtpVerify ftpVerify = FtpVerify.None
             );

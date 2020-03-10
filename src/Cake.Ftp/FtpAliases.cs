@@ -114,7 +114,7 @@ namespace Cake.Ftp {
         [CakeMethodAlias]
         public static void FtpUploadFolder(this ICakeContext context, string host, string remoteFolder, string localFolder, FtpSettings settings,
             List<FtpRule> rules = null, Action<FtpProgress> process = null,
-            FtpFolderSyncMode ftpFolderSyncMode = FtpFolderSyncMode.Mirror, FtpRemoteExists ftpRemoteExists = FtpRemoteExists.Overwrite, FtpVerify ftpVerify = FtpVerify.None)
+            FtpFolderSyncMode ftpFolderSyncMode = FtpFolderSyncMode.Mirror, FtpRemoteExists ftpRemoteExists = FtpRemoteExists.Overwrite, FtpVerify ftpVerify = FtpVerify.Retry | FtpVerify.Throw)
         {
             context.NotNull(nameof(context));
 

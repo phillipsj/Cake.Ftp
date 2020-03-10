@@ -70,7 +70,7 @@ namespace Cake.Ftp {
             CheckParams(host, remoteFolder, settings);
             localFolder.NotNull(nameof(localFolder));            
             
-            return _ftpService.UpdateFolder(host, remoteFolder, localFolder, settings, rules, process, ftpFolderSyncMode, ftpRemoteExists, ftpVerify);
+            return _ftpService.UploadFolder(host, remoteFolder, localFolder, settings, rules, process, ftpFolderSyncMode, ftpRemoteExists, ftpVerify);
         }
 
         /// <summary>

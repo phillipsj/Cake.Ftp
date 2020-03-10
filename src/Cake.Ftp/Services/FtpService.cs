@@ -73,7 +73,7 @@ namespace Cake.Ftp.Services {
         /// <param name="rules"></param>
         /// <param name="process"></param>
         /// <returns></returns>
-        public List<FtpResult> UpdateFolder(string host, string remoteFolder, string localFolder, FtpSettings settings,
+        public List<FtpResult> UploadFolder(string host, string remoteFolder, string localFolder, FtpSettings settings,
             List<FtpRule> rules = null, Action<FtpProgress> process = null,
             FtpFolderSyncMode ftpFolderSyncMode  = FtpFolderSyncMode.Mirror, FtpRemoteExists ftpRemoteExists = FtpRemoteExists.Overwrite, FtpVerify ftpVerify = FtpVerify.None
             )
@@ -81,7 +81,7 @@ namespace Cake.Ftp.Services {
             using (var client = CreateClient(host, settings))
             {
                 Connect(client, settings.AutoDetectConnectionSettings);
-                
+                client.RetryAttempts = 3;
                 var result = client.UploadDirectory(localFolder, remoteFolder, ftpFolderSyncMode, ftpRemoteExists, ftpVerify, rules, process);
                 client.Disconnect();                
                 return result;
@@ -221,7 +221,7 @@ namespace Cake.Ftp.Services {
                         try
                         {
                             using (var client = CreateClient(host, settings))
-                            {
+                            {                                
                                 if (currentFile.Attributes == FileAttributes.Directory)
                                 {
                                     client.Connect();
