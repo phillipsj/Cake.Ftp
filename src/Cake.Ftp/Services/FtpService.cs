@@ -221,10 +221,10 @@ namespace Cake.Ftp.Services {
                         try
                         {
                             using (var client = CreateClient(host, settings))
-                            {                                
+                            {
+                                Connect(client, settings.AutoDetectConnectionSettings);
                                 if (currentFile.Attributes == FileAttributes.Directory)
-                                {
-                                    client.Connect();
+                                {                                    
                                     client.SetWorkingDirectory(relativePath);
                                 }
                                 else
