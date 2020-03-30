@@ -82,6 +82,7 @@ namespace Cake.Ftp.Services {
             {
                 Connect(client, settings.AutoDetectConnectionSettings);
                 client.RetryAttempts = 3;
+                _log.Information("Start upload folder: " + localFolder + " -> " + remoteFolder);
                 var result = client.UploadDirectory(localFolder, remoteFolder, ftpFolderSyncMode, ftpRemoteExists, ftpVerify, rules, process);
                 client.Disconnect();                
                 return result;
@@ -119,18 +120,18 @@ namespace Cake.Ftp.Services {
                     _log.Error(message);
                     break;
                 }
-                case FtpTraceLevel.Warn: {
-                    _log.Warning(message);
-                    break;
-                }
-                case FtpTraceLevel.Info: {
-                    _log.Information(message);
-                    break;
-                }
-                case FtpTraceLevel.Verbose: {
-                    _log.Verbose(message);
-                    break;
-                }
+                //case FtpTraceLevel.Warn: {
+                //    _log.Warning(message);
+                //    break;
+                //}
+                //case FtpTraceLevel.Info: {
+                //    _log.Information(message);
+                //    break;
+                //}
+                //case FtpTraceLevel.Verbose: {
+                //    _log.Verbose(message);
+                //    break;
+                //}
             }
         }
 
@@ -204,8 +205,8 @@ namespace Cake.Ftp.Services {
                 var sourceFolder = new DirectoryInfo(sourcePath);
                 var fileSystemInfos = sourceFolder.EnumerateFileSystemInfos("*", SearchOption.AllDirectories);                                
                 var _taskScheduler = new LimitedConcurrencyLevelTaskScheduler(parallel);
-                var taskList = new List<Task>();
-                
+                var taskList = new List<Task>();                
+
                 foreach (var fileInfo in fileSystemInfos)
                 {
                     if (fileInfo.FullName == sourceFolder.FullName) { continue; }
@@ -224,25 +225,43 @@ namespace Cake.Ftp.Services {
                             {
                                 Connect(client, settings.AutoDetectConnectionSettings);
                                 if (currentFile.Attributes == FileAttributes.Directory)
-                                {                                    
-                                    client.SetWorkingDirectory(relativePath);
+                                {
+                                    //Create if the dir doesn't exist
+                                    if (!client.DirectoryExists(remoteRelativePath))
+                                    {
+                                        if(client.CreateDirectory(remoteRelativePath, true))
+                                        {
+                                            _log.Information("Created folder: " + remoteRelativePath);
+                                        }
+                                    }                                    
                                 }
                                 else
-                                {
-                                    _log.Information(DateTime.Now + "  Transfer of file " + remoteRelativePath +
-                                                      " started " + Environment.NewLine);
-                                    
+                                {                                                                        
                                     client.TransferChunkSize = 10000;
                                     client.UploadDataType = FtpDataType.Binary;
                                     client.RetryAttempts = 3;
 
-                                    var fileUploadedResult = client.UploadFile(currentFile.FullName, remoteRelativePath, FtpRemoteExists.Append, true, FtpVerify.Retry | FtpVerify.Throw);
-
+                                    //only upload newer file or different size - untest
+                                    //var remoteFile = client.GetObjectInfo(remotePath);
+                                    //if (remoteFile != null)
+                                    //{
+                                    //    if(currentFile.CreationTime <= remoteFile.Modified && ((FileInfo)currentFile).Length == remoteFile.Size)
+                                    //    {
+                                    //        _log.Information(DateTime.Now + " Skiped file: " + currentFile.FullName);
+                                    //        client.Disconnect();
+                                    //        return;
+                                    //    }                                        
+                                    //}
+                                    
+                                    var fileUploadedResult = client.UploadFile(currentFile.FullName, remoteRelativePath, FtpRemoteExists.Overwrite, true, FtpVerify.Retry | FtpVerify.Throw);
                                     if (fileUploadedResult.IsSuccess())
                                     {
-                                        _log.Information(DateTime.Now + "  Transfer of file " + remoteRelativePath +
-                                                          " done" + Environment.NewLine);                                        
+                                        _log.Information(currentFile.FullName + " -> " + remoteRelativePath);
                                     }
+                                    else
+                                    {
+                                        _log.Warning(DateTime.Now + " Failure file: " + currentFile.FullName);
+                                    }                                    
                                 }
                                 client.Disconnect();
                             }
