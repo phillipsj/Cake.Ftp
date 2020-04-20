@@ -212,20 +212,66 @@ namespace Cake.Ftp {
             ftpClient.DeleteFile(host, remotePath, settings);
         }
 
-        /// <summary>
-        /// Download file
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="host"></param>
-        /// <param name="remotePath"></param>
-        /// <param name="localPath"></param>
-        /// <param name="settings"></param>
-        [CakeMethodAlias]
-        public static void FtpDownloadFile(this ICakeContext context, string host, string remotePath, string localPath, FtpSettings settings)
-        {
-            context.NotNull(nameof(context));
-            var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
-            ftpClient.DownloadFile(host, remotePath, localPath, settings);
-        }
+    /// <summary>
+    /// Download file
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// Task("DownloadFile")
+    ///   .Does(() => {
+    ///     var settings = new FtpSettings() {
+    ///       Username = "some-user",
+    ///       Password = "some-password"
+    ///     };
+    ///     FtpUploadFile("myserver", "/random/test.htm", "test.htm", settings);
+    /// });
+    /// </code>
+    /// </example>
+    /// <param name="context">The context.</param>
+    /// <param name="host">host of the FTP Client</param>
+    /// <param name="remotePath">path on the file on the server</param>
+    /// <param name="localPath">the local path to save the file to</param>
+    /// <param name="settings">The settings.</param>
+    [CakeMethodAlias]
+    public static void FtpDownloadFile(this ICakeContext context, string host, string remotePath, string localPath, FtpSettings settings)
+    {
+      context.NotNull(nameof(context));
+      var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
+      ftpClient.DownloadFile(host, remotePath, localPath, settings);
     }
-}
+
+    /// <summary>
+    /// Uploads a directory recursively to the FTP server preserving file paths using the supplied credentials.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// Task("UploadDirectory")
+    ///   .Does(() => {
+    ///     var directoryToUpload = Directory("./artifacts/");
+    ///     var settings = new FtpSettings() {
+    ///       Username = "some-user",
+    ///       Password = "some-password",
+    ///       FileExistsBehavior = FtpExists.Overwrite,
+    ///       CreateRemoteDirectory = true
+    ///     };
+    ///     FtpUploadDirectory("myserver", "/httpdocs", directoryToUpload, settings);
+    /// });
+    /// </code>
+    /// </example>
+    /// <param name="context">The context.</param>
+    /// <param name="host">host of the FTP Client</param>
+    /// <param name="remoteDirectory">directory on the server to upload files to</param>
+    /// <param name="directoryToUpload">The local directory to upload the contents of</param>
+    /// <param name="settings">The settings.</param>
+    [CakeMethodAlias]
+      public static void FtpUploadDirectory(this ICakeContext context, string host, string remoteDirectory, DirectoryPath directoryToUpload,
+          FtpSettings settings)
+      {
+
+        context.NotNull(nameof(context));
+        var absolutePath = directoryToUpload.MakeAbsolute(context.Environment);
+        var ftpClient = new FtpClient(context.FileSystem, context.Environment, new FtpService(context.Log));
+        ftpClient.UploadDirectory(host, remoteDirectory, context.FileSystem.GetDirectory(absolutePath), settings);
+      }
+    }
+  }

@@ -64,5 +64,13 @@ namespace Cake.Ftp.Services {
         /// <param name="localPath"></param>
         /// <param name="settings"></param>
         void DownloadFile(string host, string remotePath, string localPath, FtpSettings settings);
+        
+        /// <summary>
+        /// Uploads a file.
+        /// </summary>
+        /// <param name="host">host of the FTP Client</param>
+        /// <param name="directories">Dictionary keyed by the remote path with a list of local files to upload to the remote path</param>
+        /// <param name="settings">Ftp Settings</param>
+        void UploadDirectories(string host, Dictionary<string, IEnumerable<string>> directories, FtpSettings settings);
     }
 }

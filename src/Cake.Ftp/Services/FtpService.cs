@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -88,6 +89,33 @@ namespace Cake.Ftp.Services {
                 return result;
             }
         }
+
+        /// Uploads a file.
+        /// </summary>
+        /// <param name="host">host of the FTP Client</param>
+        /// <param name="directories">Dictionary keyed by the remote path with a list of local files to upload to the remote path</param>
+        /// <param name="settings">Ftp Settings</param>
+        public void UploadDirectories(string host, Dictionary<string, IEnumerable<string>> directories, FtpSettings settings) {
+
+            using (var client = CreateClient(host, settings))
+            {
+                Connect(client, settings.AutoDetectConnectionSettings);
+
+                // Loop through each directory to upload files using client.UploadFiles which is more performant
+                foreach (var localDirectory in directories) {
+                    
+                    client.UploadFiles(
+                        localDirectory.Value,
+                        localDirectory.Key,
+                        Translate(settings.FileExistsBehavior),
+                        settings.CreateRemoteDirectory,
+                        errorHandling: FtpError.Throw);
+                }
+
+                client.Disconnect();
+            }
+        }
+
 
         private FluentFTP.FtpClient CreateClient(string host, FtpSettings settings) {
             var client = new FluentFTP.FtpClient(host, new NetworkCredential(settings.Username, settings.Password));

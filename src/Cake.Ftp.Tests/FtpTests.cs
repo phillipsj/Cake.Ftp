@@ -194,5 +194,93 @@ namespace Cake.Ftp.Tests {
                 result.Should().BeNull();
             }
         }
+
+
+        public sealed class TheUploadDirectoryMethod
+        {
+            [Fact]
+            public void Should_Throw_If_Host_Is_Null()
+            {
+                // Given
+                var fixture = new FtpClientFixture { Host = null };
+
+                // When 
+                var result = Record.Exception(() => fixture.UploadDirectory());
+
+                // Then
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                   .ParamName.Should().Equals("host");
+            }
+
+            [Fact]
+            public void Should_Throw_If_RemotePath_Is_Null()
+            {
+                // Given
+                var fixture = new FtpClientFixture { RemoteDirectory = null };
+
+                // When 
+                var result = Record.Exception(() => fixture.UploadDirectory());
+
+                // Then
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                    .ParamName.Should().Equals("remotePath");
+            }
+
+            [Fact]
+            public void Should_Throw_If_Source_Directory_Is_Null()
+            {
+                // Given
+                var fixture = new FtpClientFixture { DirectoryToUpload = null };
+
+                // When 
+                var result = Record.Exception(() => fixture.UploadDirectory());
+
+                // Then
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                  .ParamName.Should().Equals("sourceDirectory");
+            }
+
+            [Fact]
+            public void Should_Throw_If_Username_Is_Null()
+            {
+                // Given
+                var fixture = new FtpClientFixture { Username = null };
+
+                // When 
+                var result = Record.Exception(() => fixture.UploadDirectory());
+
+                // Then
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                   .ParamName.Should().Equals("Username");
+            }
+
+            [Fact]
+            public void Should_Throw_If_Password_Is_Null()
+            {
+                // Given
+                var fixture = new FtpClientFixture { Password = null };
+
+                // When 
+                var result = Record.Exception(() => fixture.UploadDirectory());
+
+                // Then
+                result.Should().BeOfType<ArgumentNullException>().Subject
+                   .ParamName.Should().Equals("Password");
+            }
+
+            [Fact]
+            public void Should_Upload_File_Without_Error()
+            {
+                // Given
+                var fixture = new FtpClientFixture();
+
+                // When 
+                var result = Record.Exception(() => fixture.UploadDirectory());
+
+                // Then
+                result.Should().BeNull();
+                fixture.VerifyDirectoryUpload_AllFilesPassedCorrectly();
+            }
+        }
     }
 }

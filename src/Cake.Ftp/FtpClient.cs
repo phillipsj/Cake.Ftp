@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Cake.Core;
 using Cake.Core.IO;
 using Cake.Ftp.Services;
@@ -101,19 +102,38 @@ namespace Cake.Ftp {
             _ftpService.DeleteFile(host, remotePath, settings);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="host"></param>
-        /// <param name="remotePath"></param>
-        /// <param name="localPath"></param>
-        /// <param name="settings"></param>
-        public void DownloadFile(string host, string remotePath, string localPath, FtpSettings settings)
-        {
-            CheckParams(host, remotePath, settings);
-            localPath.NotNullOrWhiteSpace(nameof(localPath));
-            
-            _ftpService.DownloadFile(host, remotePath, localPath, settings);
+    /// <summary>
+    /// Downloads a file.
+    /// </summary>
+    /// <param name="host">host of the FTP Client</param>
+    /// <param name="remotePath">path on the file on the server</param>
+    /// <param name="localPath">the local path to save the file to</param>
+    /// <param name="settings">The settings.</param>
+    public void DownloadFile(string host, string remotePath, string localPath, FtpSettings settings)
+    {
+      CheckParams(host, remotePath, settings);
+      localPath.NotNullOrWhiteSpace(nameof(localPath));
+
+      _ftpService.DownloadFile(host, remotePath, localPath, settings);
+    }
+
+    /// <summary>
+    /// Uploads a file.
+    /// </summary>
+    /// <param name="host">host of the FTP Client</param>
+    /// <param name="remoteDirectory">root directory on the server to upload the files to</param>
+    /// <param name="sourceDirectory">The local directory containing the files</param>
+    /// <param name="settings">Ftp Settings</param>
+    public void UploadDirectory(string host, string remoteDirectory, IDirectory sourceDirectory, FtpSettings settings) {
+            CheckParams(host, remoteDirectory, settings);
+            sourceDirectory.NotNull(nameof(sourceDirectory));
+
+            var normalisedRemoteDirectory = remoteDirectory.EndsWith("/") ? remoteDirectory : $"{remoteDirectory}/";
+            var filesGroupedByDirectory = sourceDirectory.GetFiles("*", SearchScope.Recursive)
+                .GroupBy(f => normalisedRemoteDirectory + sourceDirectory.Path.GetRelativePath(f.Path.GetDirectory()))
+                .ToDictionary(g => g.Key.TrimEnd('.').TrimEnd('/'), g => g.Select(i => i.Path.FullPath));
+
+            _ftpService.UploadDirectories(host, filesGroupedByDirectory, settings);
         }
 
         private void CheckParams(string host, string remotePath, FtpSettings settings)
