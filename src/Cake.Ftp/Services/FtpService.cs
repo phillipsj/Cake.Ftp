@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using FluentFTP;
+using FluentFTP.Helpers;
 using FluentFTP.Rules;
 
 namespace Cake.Ftp.Services {
@@ -166,9 +167,9 @@ namespace Cake.Ftp.Services {
         private FtpRemoteExists Translate(FtpExists ftpExists) {
             switch (ftpExists) {
                 case FtpExists.Append:
-                    return FtpRemoteExists.Append;
+                    return FtpRemoteExists.Resume;
                 case FtpExists.AppendNoCheck:
-                    return FtpRemoteExists.AppendNoCheck;
+                    return FtpRemoteExists.ResumeNoCheck;
                 case FtpExists.NoCheck :
                     return FtpRemoteExists.NoCheck;
                 case FtpExists.Overwrite:

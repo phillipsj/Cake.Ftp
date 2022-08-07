@@ -16,7 +16,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                 .ParamName.Should().Equals("fileSystem");
+                 .ParamName.Should().BeEquivalentTo("fileSystem");
             }
 
             [Fact]
@@ -29,7 +29,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                .ParamName.Should().Equals("environment");
+                .ParamName.Should().BeEquivalentTo("environment");
             }
 
             [Fact]
@@ -42,7 +42,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                .ParamName.Should().Equals("ftpService");
+                .ParamName.Should().BeEquivalentTo("ftpService");
             }
         }
 
@@ -57,7 +57,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                   .ParamName.Should().Equals("host");
+                   .ParamName.Should().BeEquivalentTo("host");
             }
 
             [Fact]
@@ -71,7 +71,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                    .ParamName.Should().Equals("remotePath");
+                    .ParamName.Should().BeEquivalentTo("remotePath");
             }
 
             [Fact]
@@ -84,7 +84,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                  .ParamName.Should().Equals("fileToUpload");
+                  .ParamName.Should().BeEquivalentTo("fileToUpload");
             }
 
             [Fact]
@@ -97,7 +97,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                   .ParamName.Should().Equals("Username");
+                   .ParamName.Should().BeEquivalentTo("Username");
             }
 
             [Fact]
@@ -110,7 +110,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                   .ParamName.Should().Equals("Password");
+                   .ParamName.Should().BeEquivalentTo("Password");
             }
 
             [Fact]
@@ -139,7 +139,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                    .ParamName.Should().Equals("host");
+                    .ParamName.Should().BeEquivalentTo("host");
             }
 
             [Fact]
@@ -153,7 +153,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                    .ParamName.Should().Equals("remotePath");
+                    .ParamName.Should().BeEquivalentTo("remotePath");
             }
 
             [Fact]
@@ -166,7 +166,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                  .ParamName.Should().Equals("Username");
+                  .ParamName.Should().BeEquivalentTo("Username");
             }
 
             [Fact]
@@ -179,7 +179,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                 .ParamName.Should().Equals("Password");
+                 .ParamName.Should().BeEquivalentTo("Password");
             }
 
             [Fact]
@@ -209,7 +209,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                   .ParamName.Should().Equals("host");
+                   .ParamName.Should().BeEquivalentTo("host");
             }
 
             [Fact]
@@ -223,7 +223,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                    .ParamName.Should().Equals("remotePath");
+                    .ParamName.Should().BeEquivalentTo("remotePath");
             }
 
             [Fact]
@@ -237,7 +237,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                  .ParamName.Should().Equals("sourceDirectory");
+                  .ParamName.Should().BeEquivalentTo("sourceDirectory");
             }
 
             [Fact]
@@ -251,7 +251,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                   .ParamName.Should().Equals("Username");
+                   .ParamName.Should().BeEquivalentTo("Username");
             }
 
             [Fact]
@@ -265,7 +265,7 @@ namespace Cake.Ftp.Tests {
 
                 // Then
                 result.Should().BeOfType<ArgumentNullException>().Subject
-                   .ParamName.Should().Equals("Password");
+                   .ParamName.Should().BeEquivalentTo("Password");
             }
 
             [Fact]
