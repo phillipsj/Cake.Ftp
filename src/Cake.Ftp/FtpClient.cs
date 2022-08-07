@@ -139,7 +139,7 @@ namespace Cake.Ftp {
         private void CheckParams(string host, string remotePath, FtpSettings settings)
         {
             host.NotNullOrWhiteSpace(nameof(host));
-            remotePath.NotNullOrWhiteSpace(nameof(host));
+            remotePath.NotNullOrWhiteSpace(nameof(remotePath));
             settings.Username.NotNullOrWhiteSpace(nameof(settings.Username));
             settings.Password.NotNullOrWhiteSpace(nameof(settings.Password));
         }
